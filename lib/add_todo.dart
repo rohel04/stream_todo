@@ -1,7 +1,13 @@
+import 'dart:async';
+import 'package:provider/provider.dart';
+import 'package:todo_stream/todoProvider.dart';
+
 import 'package:flutter/material.dart';
 
 class AddTodo extends StatefulWidget {
-  const AddTodo({Key? key}) : super(key: key);
+
+  late StreamController streamController;
+   AddTodo({Key? key}) : super(key: key);
 
   @override
   State<AddTodo> createState() => _AddTodoState();
@@ -13,6 +19,7 @@ class _AddTodoState extends State<AddTodo> {
 
   @override
   Widget build(BuildContext context) {
+  final todoProvider=Provider.of<TodoProvider>(context);
     return Scaffold(
       appBar: AppBar(),
       body: Container(
@@ -25,7 +32,8 @@ class _AddTodoState extends State<AddTodo> {
             ),
             SizedBox(height: 10),
             ElevatedButton(onPressed: (){
-              Navigator.pop(context,{'todo':_todoController.text});
+              todoProvider.addTodo(_todoController.text);
+              Navigator.pop(context);
             }, child: Text('Add todo'))
             
           ],

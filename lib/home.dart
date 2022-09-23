@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:todo_stream/add_todo.dart';
 import 'package:todo_stream/service.dart';
+import 'package:todo_stream/todoProvider.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -12,45 +14,43 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
 
-  List<String> n=[];
-  Stream<List<String>> asyncGenerator() async* {
-    yield n;
-  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Todo'),
-      ),
-      body: StreamBuilder(
-        stream: asyncGenerator(),
-        builder: (context,snapshot){
-              return ListView.builder(
-                  itemCount: snapshot.data?.length,
-                  itemBuilder: (context,index){
-                  return ListTile(
-                    title: Text('${snapshot.data?[index]}'),
-                    trailing: IconButton(onPressed: (){
-                      setState(() {
 
-                      n.removeAt(index);
-                      });
-                      print(n);
-                    },icon: Icon(Icons.delete)),
-                  );
-              });
+    final todoProvider=Provider.of<TodoProvider>(context);
+
+
+  return Scaffold(
+    appBar: AppBar(title: Text('Todo')),
+    body: Container(
+      child: StreamBuilder(
+        stream: todoProvider.streamController.stream,
+        builder: (context,snapshot){
+          if(snapshot.data==null)
+            {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+          else{
+            return ListView.builder(
+                itemCount: snapshot.data?.length,
+                itemBuilder: (context,index){
+                  return ListTile(title: Text('${snapshot.data?[index]}'),);
+                });
           }
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async{
-         dynamic result=await Navigator.push(context, MaterialPageRoute(builder: (context)=>AddTodo()));
-         setState(() {
-           n.add(result['todo']);
-         });
+
         },
-        child: Icon(Icons.add),
-      ),
+      )
+    ),
+    floatingActionButton: FloatingActionButton(onPressed: (){
+
+      Navigator.push(context, MaterialPageRoute(builder:(context)=> AddTodo()));
+    },child: Icon(Icons.add),
+
+    ),
     );
+
   }
 }
