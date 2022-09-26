@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:provider/provider.dart';
 import 'package:todo_stream/todoProvider.dart';
-
 import 'package:flutter/material.dart';
+import 'package:todo_stream/todo_model.dart';
 
 class AddTodo extends StatefulWidget {
 
@@ -16,7 +16,7 @@ class AddTodo extends StatefulWidget {
 class _AddTodoState extends State<AddTodo> {
 
   final _todoController=TextEditingController();
-
+  int count=0;
   @override
   Widget build(BuildContext context) {
   final todoProvider=Provider.of<TodoProvider>(context);
@@ -32,7 +32,8 @@ class _AddTodoState extends State<AddTodo> {
             ),
             SizedBox(height: 10),
             ElevatedButton(onPressed: (){
-              todoProvider.addTodo(_todoController.text);
+              String todo=_todoController.text;
+              todoProvider.addTodo(Todo(id: todo, todo: todo));
               Navigator.pop(context);
             }, child: Text('Add todo'))
             
